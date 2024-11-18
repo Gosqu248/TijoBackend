@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -24,6 +27,15 @@ public class Restaurant {
     private String logoUrl;
 
     private String imageUrl;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "restaurant_menu",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "menu_id")
+    )
+    @JsonIgnore
+    private Set<Menu> menu = new HashSet<>();
 
     @OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL)
     @JsonIgnore
