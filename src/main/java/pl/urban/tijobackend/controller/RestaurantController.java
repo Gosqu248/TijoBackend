@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.urban.tijobackend.model.Restaurant;
 import pl.urban.tijobackend.service.RestaurantService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
@@ -26,4 +28,23 @@ public class RestaurantController {
         Restaurant savedRestaurant =  restaurantService.addRestaurant(restaurant);
         return ResponseEntity.ok(savedRestaurant);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Restaurant> updateRestaurant(@RequestParam Long id, @RequestBody Restaurant restaurant) {
+        Restaurant updatedRestaurant =  restaurantService.updateRestaurant(id, restaurant);
+        return ResponseEntity.ok(updatedRestaurant);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {
+        restaurantService.deleteRestaurant(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Restaurant>> getAllRestaurants() {
+        return ResponseEntity.ok(restaurantService.getAllRestaurants());
+    }
+
+
 }

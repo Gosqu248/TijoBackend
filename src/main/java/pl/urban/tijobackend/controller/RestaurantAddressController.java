@@ -38,4 +38,23 @@ public class RestaurantAddressController {
         List<SearchedRestaurantDTO> results = restaurantAddressService.searchNearbyRestaurants(address, radius);
         return ResponseEntity.ok(results);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<RestaurantAddress> updateRestaurantAddress(@RequestParam Long id, @RequestBody RestaurantAddress restaurantAddress) {
+        RestaurantAddress updatedRestaurantAddress =  restaurantAddressService.updateAddress(id, restaurantAddress);
+        return ResponseEntity.ok(updatedRestaurantAddress);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteRestaurantAddress(@PathVariable Long id) {
+        restaurantAddressService.deleteRestaurantAddress(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<RestaurantAddress>> getAllRestaurantAddresses() {
+        return ResponseEntity.ok(restaurantAddressService.getAllRestaurantAddresses());
+    }
+
 }
+

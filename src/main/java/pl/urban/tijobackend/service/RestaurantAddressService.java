@@ -96,5 +96,29 @@ public class RestaurantAddressService {
 
     }
 
+    public void deleteRestaurantAddress(Long id) {
+        restaurantAddressRepository.deleteById(id);
+    }
+
+    public RestaurantAddress updateAddress(Long id, RestaurantAddress updatedAddress) {
+        RestaurantAddress existingAddress = restaurantAddressRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Restaurant address with id " + id + " not found"));
+
+        existingAddress.setCity(updatedAddress.getCity());
+        existingAddress.setStreet(updatedAddress.getStreet());
+        existingAddress.setFlatNumber(updatedAddress.getFlatNumber());
+        existingAddress.setRestaurant(updatedAddress.getRestaurant());
+        existingAddress.setZipCode(updatedAddress.getZipCode());
+
+        existingAddress.setLatitude(updatedAddress.getLatitude());
+        existingAddress.setLongitude(updatedAddress.getLongitude());
+
+        return restaurantAddressRepository.save(existingAddress);
+    }
+
+    public List<RestaurantAddress> getAllRestaurantAddresses() {
+        return restaurantAddressRepository.findAll();
+    }
+
 
 }
