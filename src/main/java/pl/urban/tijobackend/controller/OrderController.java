@@ -48,4 +48,14 @@ public class OrderController {
         }
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteOrder(@RequestParam Long id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

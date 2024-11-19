@@ -6,6 +6,7 @@ import pl.urban.tijobackend.repository.MenuRepository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,24 @@ public class MenuService {
         menuRepository.deleteById(menuItemId);
     }
 
-    public Menu updateMenuItem(Menu menu) {
+    public Set<String> getRestaurantMenuCategories(Long restaurantId) {
+        List<Menu> menuItems = menuRepository.findByRestaurantId(restaurantId);
+        return menuItems.stream()
+                .map(Menu::getCategory)
+                .collect(Collectors.toSet());
+    }
+
+    public Menu updateMenuItem(Long menuId, Menu menu) {
+        Menu existingMenu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("Menu with id " + menuId + " not found"));
+
+        existingMenu.setName(menu.getName());
+        existingMenu.setPrice(menu.getPrice());
+        existingMenu.setCategory(menu.getCategory());
+        existingMenu.setRestaurant(menu.getRestaurant());
+        existingMenu.setIngredients(menu.getIngredients());
+
+
         return menuRepository.save(menu);
     }
 

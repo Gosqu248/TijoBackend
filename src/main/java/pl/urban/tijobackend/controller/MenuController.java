@@ -7,6 +7,7 @@ import pl.urban.tijobackend.model.Menu;
 import pl.urban.tijobackend.service.MenuService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/menu")
@@ -32,6 +33,21 @@ public class MenuController {
         try {
             Menu newMenu = menuService.addMenuItem(menu);
             return ResponseEntity.ok(newMenu);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/menuCategories")
+    public Set<String> getMenuCategories(@RequestParam Long restaurantId) {
+        return menuService.getRestaurantMenuCategories(restaurantId);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Menu> updateMenuItem(@RequestParam Long menuId, @RequestBody Menu menu) {
+        try {
+            Menu updatedMenu = menuService.updateMenuItem(menuId, menu);
+            return ResponseEntity.ok(updatedMenu);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
