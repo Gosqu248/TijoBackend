@@ -30,12 +30,8 @@ public class OrderController {
 
     @PostMapping("/createOrder")
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        try {
-            Order createdOrder = orderService.createOrder(order);
-            return ResponseEntity.ok(createdOrder);
-        } catch (Exception e) {
-            throw e;
-        }
+        Order createdOrder = orderService.createOrder(order);
+        return ResponseEntity.ok(createdOrder);
     }
 
     @GetMapping("/all")

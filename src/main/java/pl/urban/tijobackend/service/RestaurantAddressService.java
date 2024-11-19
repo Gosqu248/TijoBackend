@@ -1,6 +1,5 @@
 package pl.urban.tijobackend.service;
 
-import org.json.JSONException;
 import org.springframework.stereotype.Service;
 import pl.urban.tijobackend.dto.SearchedRestaurantDTO;
 import pl.urban.tijobackend.model.Restaurant;
@@ -36,7 +35,7 @@ public class RestaurantAddressService {
         return restaurantAddressRepository.save(restaurantAddress);
     }
 
-    public List<SearchedRestaurantDTO> searchNearbyRestaurants(String address, double radiusKm) throws JSONException {
+    public List<SearchedRestaurantDTO> searchNearbyRestaurants(String address, double radiusKm)  {
         String formattedAddress = removeCommas(address);
         Map<String, Double> coords = geocodingService.getCoordinates(formattedAddress);
         double latitude = coords.get("lat");

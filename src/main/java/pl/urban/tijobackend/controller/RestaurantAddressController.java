@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.urban.tijobackend.dto.SearchedRestaurantDTO;
 import pl.urban.tijobackend.model.RestaurantAddress;
 import pl.urban.tijobackend.service.RestaurantAddressService;
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class RestaurantAddressController {
     @GetMapping("/searchRestaurant")
     public ResponseEntity<List<SearchedRestaurantDTO>> searchRestaurants(
             @RequestParam String address,
-            @RequestParam(defaultValue = "6") double radius) throws JSONException {
+            @RequestParam(defaultValue = "6") double radius) {
         List<SearchedRestaurantDTO> results = restaurantAddressService.searchNearbyRestaurants(address, radius);
         return ResponseEntity.ok(results);
     }
