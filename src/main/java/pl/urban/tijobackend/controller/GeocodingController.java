@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.urban.tijobackend.service.GeocodingService;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/geocoding")
 public class GeocodingController {
@@ -18,8 +16,8 @@ public class GeocodingController {
         this.geocodingService = geocodingService;
     }
 
-    @GetMapping("/cordinates")
-    public Map<String, Double> getCoordinates(@RequestParam String address) {
+    @GetMapping("/coordinates")
+    public double[] getCoordinates(@RequestParam String address) {
         return geocodingService.getCoordinates(address);
     }
 }

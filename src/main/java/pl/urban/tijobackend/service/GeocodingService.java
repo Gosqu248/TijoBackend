@@ -3,12 +3,10 @@ package pl.urban.tijobackend.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import pl.urban.tijobackend.request.GeocodingResponse;
+import pl.urban.tijobackend.request.GeoCodingResponse;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class GeocodingService {
@@ -19,19 +17,42 @@ public class GeocodingService {
         this.restTemplate = restTemplate;
     }
 
-    public Map<String, Double> getCoordinates(java.lang.String address) {
-        java.lang.String url = java.lang.String.format("https://nominatim.openstreetmap.org/search?format=json&q=%s",
-                URLEncoder.encode(address, StandardCharsets.UTF_8));
-        ResponseEntity<GeocodingResponse[]> response = restTemplate.getForEntity(url, GeocodingResponse[].class);
+    public double[] getCoordinates(String address) {
+        String formattedAddress = removeCommas(address);
 
-        if (response.getBody() != null && response.getBody().length > 0) {
-            GeocodingResponse location = response.getBody()[0];
-            Map<java.lang.String, java.lang.Double> coordinates = new HashMap<>();
-            coordinates.put("lat", java.lang.Double.parseDouble(location.getLat()));
-            coordinates.put("lon", java.lang.Double.parseDouble(location.getLon()));
-            return coordinates;
+        String url = String.format("https://nominatim.openstreetmap.org/search?format=json&q=%s",
+                URLEncoder.encode(formattedAddress, StandardCharsets.UTF_8));
+        try {
+            ResponseEntity<GeoCodingResponse[]> response = restTemplate.getForEntity(url, GeoCodingResponse[].class);
+
+            if (response.getBody() != null && response.getBody().length > 0) {
+                GeoCodingResponse location = response.getBody()[0];
+                double lat = Double.parseDouble(location.getLat());
+                double lon = Double.parseDouble(location.getLon());
+
+
+
+                return new double[]{lat, lon};
+            } else {
+                throw new IllegalArgumentException("No results found for address: " + address);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not find coordinates for address: " + address);
         }
-        throw new IllegalArgumentException("Could not find coordinates for address: " + address);
     }
 
+    private String removeCommas(String address) {
+        String addressWithoutCommas = address.replace(",", "");
+        return addressWithoutCommas
+                .replace("ą", "a")
+                .replace("ć", "c")
+                .replace("ę", "e")
+                .replace("ł", "l")
+                .replace("ń", "n")
+                .replace("ó", "o")
+                .replace("ś", "s")
+                .replace("ź", "z")
+                .replace("ż", "z");
+
+    }
 }

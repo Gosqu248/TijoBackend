@@ -8,7 +8,6 @@ import pl.urban.tijobackend.repository.RestaurantAddressRepository;
 import pl.urban.tijobackend.repository.RestaurantRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,9 +36,9 @@ public class RestaurantAddressService {
 
     public List<SearchedRestaurantDTO> searchNearbyRestaurants(String address, double radiusKm)  {
         String formattedAddress = removeCommas(address);
-        Map<String, Double> coords = geocodingService.getCoordinates(formattedAddress);
-        double latitude = coords.get("lat");
-        double longitude = coords.get("lon");
+        double[] coords = geocodingService.getCoordinates(address);
+        double latitude = coords[0];
+        double longitude = coords[1];
 
         List<RestaurantAddress> restaurantAddresses = restaurantAddressRepository.findNearbyRestaurants(latitude, longitude, radiusKm);
         return restaurantAddresses.stream()
