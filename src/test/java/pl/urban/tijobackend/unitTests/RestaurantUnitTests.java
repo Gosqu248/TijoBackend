@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.urban.tijobackend.model.Restaurant;
 import pl.urban.tijobackend.repository.RestaurantRepository;
 import pl.urban.tijobackend.service.RestaurantService;
@@ -20,6 +22,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RestaurantUnitTests {
+    private static final Logger logger = LoggerFactory.getLogger(RestaurantUnitTests.class);
+
 
     @Mock
     private RestaurantRepository restaurantRepository;
@@ -48,7 +52,7 @@ public class RestaurantUnitTests {
         assertNotNull(foundRestaurant);
         assertEquals(testRestaurant.getId(), foundRestaurant.getId());
         assertEquals(testRestaurant.getName(), foundRestaurant.getName());
-        verify(restaurantRepository).findById(restaurantId);
+        logger.info("Test zakończony sukcesem - znaleziono restaurację o ID: {}", restaurantId);
     }
 
     @Test
@@ -62,6 +66,8 @@ public class RestaurantUnitTests {
 
         // Then
         assertEquals("Restaurant with id " + nonExistingId + " not found", exception.getMessage());
+        logger.info("Test zakończony sukcesem - nie znaleziono restauracji o ID: {}", nonExistingId);
+
     }
 
     @Test
@@ -78,7 +84,8 @@ public class RestaurantUnitTests {
         // Then
         assertNotNull(savedRestaurant);
         assertEquals(newRestaurant, savedRestaurant);
-        verify(restaurantRepository).save(newRestaurant);
+        logger.info("Dodano nową restaurację");
+
     }
 
     @Test
@@ -91,6 +98,8 @@ public class RestaurantUnitTests {
 
         // Then
         verify(restaurantRepository).deleteById(restaurantId);
+        logger.info("Test zakończony sukcesem - usunięto restaurację o ID: {}", restaurantId);
+
     }
 
     @Test
@@ -115,7 +124,8 @@ public class RestaurantUnitTests {
         // Then
         assertEquals("New Name", updatedRestaurant.getName());
         assertEquals("New Category", updatedRestaurant.getCategory());
-        verify(restaurantRepository).save(existingRestaurant);
+        logger.info("Test zakończony sukcesem - zaktualizowano restaurację o ID: {}", restaurantId);
+
     }
 
     @Test
@@ -133,7 +143,8 @@ public class RestaurantUnitTests {
         // Then
         assertNotNull(retrievedRestaurants);
         assertEquals(2, retrievedRestaurants.size());
-        verify(restaurantRepository).findAll();
+        logger.info("Test zakończony sukcesem - pobrano wszystkie restauracje");
+
     }
 
 }

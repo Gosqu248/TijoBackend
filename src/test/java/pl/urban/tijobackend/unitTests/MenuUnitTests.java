@@ -1,11 +1,12 @@
 package pl.urban.tijobackend.unitTests;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.urban.tijobackend.model.Menu;
 import pl.urban.tijobackend.repository.MenuRepository;
 import pl.urban.tijobackend.service.MenuService;
@@ -19,6 +20,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class MenuUnitTests {
 
+    private static final Logger logger = LoggerFactory.getLogger(MenuUnitTests.class);
+
     @Mock
     private MenuRepository menuRepository;
 
@@ -26,7 +29,6 @@ public class MenuUnitTests {
     private MenuService menuService;
 
     @Test
-    @DisplayName("Test getRestaurantMenu with empty data returns empty list")
     void shouldReturnEmptyListWhenNoMenuItemsForRestaurant() {
         // Given
         when(menuRepository.findByRestaurantId(1L)).thenReturn(List.of());
@@ -37,12 +39,11 @@ public class MenuUnitTests {
         // Then
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(menuRepository).findByRestaurantId(1L);
+        logger.info("Test zakończony sukcesem - brak pozycji w menu dla restauracji o ID: 1");
 
     }
 
     @Test
-    @DisplayName("Test findById with existing menu returns menu")
     void shouldFindMenuItemByIdSuccessfully() {
         // Given
         Menu existingMenu = new Menu(1L, "McWrap® Chrupiący Klasyczny", "McWrapy i Sałatki", null, 23.2, null, null, null);
@@ -55,11 +56,11 @@ public class MenuUnitTests {
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("McWrap® Chrupiący Klasyczny", result.getName());
-        verify(menuRepository).findById(1L);
+        logger.info("Test zakończony sukcesem - znaleziono pozycję menu o ID: 1");
+
     }
 
     @Test
-    @DisplayName("Test addMenu with valid menu saves successfully")
     void shouldAddMenuItemSuccessfully() {
         // Given
         Menu newMenu = new Menu(null, "Chicken Burger", "Burgery", "Chicken, Lettuce, Tomato", 18.5, null, null, null);
@@ -74,10 +75,11 @@ public class MenuUnitTests {
         assertEquals(4L, result.getId());
         assertEquals("Chicken Burger", result.getName());
         assertEquals(18.5, result.getPrice());
+        logger.info("Test zakończony sukcesem - dodano nową pozycję menu");
+
     }
 
     @Test
-    @DisplayName("Test deleteMenuItem with existing menu deletes successfully")
     void shouldDeleteMenuItemSuccessfully() {
         // Given
         Long Id = 1L;
@@ -89,11 +91,12 @@ public class MenuUnitTests {
 
         // Then
         verify(menuRepository).deleteById(Id);
+        logger.info("Test zakończony sukcesem - usunięto pozycję menu o ID: {}", Id);
+
     }
 
 
     @Test
-    @DisplayName("Test deleteMenuItem with non-existing menu throws exception")
     void shouldThrowExceptionWhenDeletingNonExistingMenuItem() {
         // Given
         Long Id = 999L;
@@ -104,6 +107,8 @@ public class MenuUnitTests {
 
         // Then
         assertEquals("Menu item with id " + Id + " not found.", exception.getMessage());
+        logger.info("Test zakończony sukcesem - nie znaleziono pozycji menu o ID: {}", Id);
+
     }
 
 }

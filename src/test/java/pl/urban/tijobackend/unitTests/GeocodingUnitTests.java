@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +22,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class GeocodingUnitTests {
+    private static final Logger logger = LoggerFactory.getLogger(GeocodingUnitTests.class);
 
     @Mock
     private RestTemplate restTemplate;
@@ -49,6 +52,8 @@ public class GeocodingUnitTests {
         assertNotNull(coordinates);
         assertEquals(expectedLat, coordinates[0]);
         assertEquals(expectedLon, coordinates[1]);
+        logger.info("Test dla adresu Paris zakończony sukcesem");
+
     }
 
     @Test
@@ -69,6 +74,8 @@ public class GeocodingUnitTests {
         assertNotNull(coordinates);
         assertEquals(expectedLat, coordinates[0]);
         assertEquals(expectedLon, coordinates[1]);
+        logger.info("Test dla adresu Tarnów, 33-100 zakończony sukcesem");
+
     }
 
     @Test
@@ -88,6 +95,8 @@ public class GeocodingUnitTests {
         String expectedMessage = "Could not find coordinates for address: " + address;
         String actualMessage = exception.getMessage();
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
+        logger.info("Test dla nieprawidłowego adresu zakończony sukcesem");
+
     }
 
 

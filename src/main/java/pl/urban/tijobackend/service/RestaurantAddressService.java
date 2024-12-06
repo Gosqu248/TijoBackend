@@ -94,8 +94,13 @@ public class RestaurantAddressService {
 
     }
 
-    public void deleteRestaurantAddress(Long id) {
-        restaurantAddressRepository.deleteById(id);
+    public void deleteRestaurantAddress(Long addressId) {
+        RestaurantAddress address = restaurantAddressRepository.findById(addressId)
+                .orElseThrow(() -> new IllegalArgumentException("Restaurant address with id " + addressId + " not found"));
+        Restaurant restaurant = address.getRestaurant();
+        restaurant.setRestaurantAddress(null);
+        restaurantRepository.save(restaurant);
+        restaurantAddressRepository.deleteById(addressId);
     }
 
     public RestaurantAddress updateAddress(Long id, RestaurantAddress updatedAddress) {
