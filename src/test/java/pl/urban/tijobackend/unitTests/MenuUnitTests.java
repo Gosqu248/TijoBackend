@@ -2,9 +2,10 @@ package pl.urban.tijobackend.unitTests;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.urban.tijobackend.model.Menu;
 import pl.urban.tijobackend.repository.MenuRepository;
 import pl.urban.tijobackend.service.MenuService;
@@ -13,20 +14,20 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class MenuServiceTests {
+@ExtendWith(MockitoExtension.class)
+public class MenuUnitTests {
 
-    @MockBean
+    @Mock
     private MenuRepository menuRepository;
 
-    @Autowired
+    @InjectMocks
     private MenuService menuService;
 
     @Test
     @DisplayName("Test getRestaurantMenu with empty data returns empty list")
-    void getRestaurantMenu_emptyData_returnsEmptyList() {
+    void shouldReturnEmptyListWhenNoMenuItemsForRestaurant() {
         // Given
         when(menuRepository.findByRestaurantId(1L)).thenReturn(List.of());
 
@@ -36,11 +37,13 @@ public class MenuServiceTests {
         // Then
         assertNotNull(result);
         assertTrue(result.isEmpty());
+        verify(menuRepository).findByRestaurantId(1L);
+
     }
 
     @Test
     @DisplayName("Test findById with existing menu returns menu")
-    void givenMenuExists_whenFindById_thenReturnMenu() {
+    void shouldFindMenuItemByIdSuccessfully() {
         // Given
         Menu existingMenu = new Menu(1L, "McWrap® Chrupiący Klasyczny", "McWrapy i Sałatki", null, 23.2, null, null, null);
         when(menuRepository.findById(1L)).thenReturn(Optional.of(existingMenu));
@@ -52,11 +55,12 @@ public class MenuServiceTests {
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("McWrap® Chrupiący Klasyczny", result.getName());
+        verify(menuRepository).findById(1L);
     }
 
     @Test
     @DisplayName("Test addMenu with valid menu saves successfully")
-    void givenValidMenu_whenAddMenu_thenSaveSuccessfully() {
+    void shouldAddMenuItemSuccessfully() {
         // Given
         Menu newMenu = new Menu(null, "Chicken Burger", "Burgery", "Chicken, Lettuce, Tomato", 18.5, null, null, null);
         Menu savedMenu = new Menu(4L, "Chicken Burger", "Burgery", "Chicken, Lettuce, Tomato", 18.5, null, null, null);
@@ -73,16 +77,33 @@ public class MenuServiceTests {
     }
 
     @Test
-    @DisplayName("Test deleteMenuItem with non-existing menu throws exception")
-    void givenMenuDoesNotExist_whenDeleteMenu_thenThrowException() {
+    @DisplayName("Test deleteMenuItem with existing menu deletes successfully")
+    void shouldDeleteMenuItemSuccessfully() {
         // Given
-        when(menuRepository.findById(999L)).thenReturn(Optional.empty());
+        Long Id = 1L;
+        Menu existingMenu = new Menu(Id, "McWrap® Chrupiący Klasyczny", "McWrapy i Sałatki", null, 23.2, null, null, null);
+        when(menuRepository.existsById(Id)).thenReturn(true);
 
         // When
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> menuService.deleteMenuItem(999L));
+        menuService.deleteMenuItem(Id);
 
         // Then
-        assertEquals("Menu item with id 999 not found.", exception.getMessage());
+        verify(menuRepository).deleteById(Id);
+    }
+
+
+    @Test
+    @DisplayName("Test deleteMenuItem with non-existing menu throws exception")
+    void shouldThrowExceptionWhenDeletingNonExistingMenuItem() {
+        // Given
+        Long Id = 999L;
+        lenient().when(menuRepository.findById(Id)).thenReturn(Optional.empty());
+
+        // When
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> menuService.deleteMenuItem(Id));
+
+        // Then
+        assertEquals("Menu item with id " + Id + " not found.", exception.getMessage());
     }
 
 }
