@@ -1,4 +1,4 @@
-package pl.urban.tijobackend.unitTests.MenuServiceTests;
+package pl.urban.tijobackend.unitTests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,26 @@ public class GeocodingServiceTests {
         String address = "Paris";
         GeoCodingResponse mockResponse = new GeoCodingResponse("48.8588897", "2.3200410217200766");
 
-        // Mockowanie odpowiedzi z RestTemplate
+        when(restTemplate.getForEntity(anyString(), eq(GeoCodingResponse[].class)))
+                .thenReturn(new ResponseEntity<>(new GeoCodingResponse[] {mockResponse}, HttpStatus.OK));
+
+        // When
+        double[] coordinates = geocodingService.getCoordinates(address);
+
+        // Then
+        double expectedLat = Double.parseDouble(mockResponse.getLat());
+        double expectedLon = Double.parseDouble(mockResponse.getLon());
+        assertNotNull(coordinates);
+        assertEquals(expectedLat, coordinates[0]);
+        assertEquals(expectedLon, coordinates[1]);
+    }
+
+    @Test
+    void shouldReturnCoordinatesForTarnow() {
+        // Given
+        String address = "Tarnów, 33-100";
+        GeoCodingResponse mockResponse = new GeoCodingResponse("50.025988299999995", "20.96405842696229");
+
         when(restTemplate.getForEntity(anyString(), eq(GeoCodingResponse[].class)))
                 .thenReturn(new ResponseEntity<>(new GeoCodingResponse[] {mockResponse}, HttpStatus.OK));
 

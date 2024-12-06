@@ -25,11 +25,25 @@ public class MenuService {
         return sortByCategory(menuItems);
     }
 
+    public Menu getMenuById(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("Menu with id " + menuId + " not found"));
+    }
+
     public Menu addMenuItem(Menu menu) {
+        List<Menu> existingMenus = menuRepository.findAll();
+        for (Menu existingMenu : existingMenus) {
+            if (existingMenu.getName().equals(menu.getName())) {
+                throw new IllegalArgumentException("Menu item with the name " + menu.getName() + " already exists.");
+            }
+        }
         return menuRepository.save(menu);
     }
 
     public void deleteMenuItem(Long menuItemId) {
+        if (!menuRepository.existsById(menuItemId)) {
+            throw new IllegalArgumentException("Menu item with id " + menuItemId + " not found.");
+        }
         menuRepository.deleteById(menuItemId);
     }
 

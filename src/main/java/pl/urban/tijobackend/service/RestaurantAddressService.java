@@ -36,7 +36,7 @@ public class RestaurantAddressService {
 
     public List<SearchedRestaurantDTO> searchNearbyRestaurants(String address, double radiusKm)  {
         String formattedAddress = removeCommas(address);
-        double[] coords = geocodingService.getCoordinates(address);
+        double[] coords = geocodingService.getCoordinates(formattedAddress);
         double latitude = coords[0];
         double longitude = coords[1];
 
