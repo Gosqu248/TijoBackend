@@ -1,4 +1,6 @@
-# 📘 Testowanie i Jakość Oprogramowania
+# 📘 Testowanie i Jakość Oprogramowania 
+
+[Readme in English](https://github.com/Gosqu248/TijoBackend/blob/main/README-ENG.md)
 
 ## ✍️ Autor
 **Grzegorz Urban**
