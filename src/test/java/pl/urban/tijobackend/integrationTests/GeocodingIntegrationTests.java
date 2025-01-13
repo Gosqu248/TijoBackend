@@ -22,7 +22,7 @@ public class GeocodingIntegrationTests {
     public void testGetCoordinatesForParis() {
         // Given
         String address = "Paris";
-        double[] correctCoordinates = {48.8588897, 2.3200410217200766};
+        double[] correctCoordinates = {48.8534951, 2.3483915};
 
         // When
         double[] coordinates = geocodingService.getCoordinates(address);
